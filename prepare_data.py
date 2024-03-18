@@ -1,11 +1,9 @@
-# from keras.preprocessing.text import Tokenizer
 from keras.layers import TextVectorization 
 from keras.preprocessing.image import load_img, img_to_array
 from keras.utils import to_categorical
 import json
 import os
 import numpy as np
-from easy_vqa import get_train_questions, get_test_questions, get_train_image_paths, get_test_image_paths, get_answers
 
 def setup():
 	def read_questions(path):
@@ -16,10 +14,10 @@ def setup():
 		image_ids = [q[2] for q in qs]
 		return (texts, answers, image_ids)
 
-	train_qs, train_answers, train_image_ids = read_questions('easy_vqa/data/train/questions.json')
-	test_qs, test_answers, test_image_ids = read_questions('easy_vqa/data/test/questions.json')
+	train_qs, train_answers, train_image_ids = read_questions('data/train/questions.json')
+	test_qs, test_answers, test_image_ids = read_questions('data/test/questions.json')
 
-	with open('easy_vqa/data/answers.txt', 'r') as file:
+	with open('data/answers.txt', 'r') as file:
 		all_answers = [a.strip() for a in file]
 
 	num_answers = len(all_answers)
@@ -45,8 +43,8 @@ def setup():
 				paths[image_id] = os.path.join(dir, filename)
 		return paths
 
-	train_ims = read_images(extract_paths('easy_vqa/data/train/images'))
-	test_ims  = read_images(extract_paths('easy_vqa/data/test/images'))
+	train_ims = read_images(extract_paths('data/train/images'))
+	test_ims  = read_images(extract_paths('data/test/images'))
     
 	im_shape = train_ims[0].shape
 
@@ -77,4 +75,4 @@ def setup():
 
 	return (train_X_ims, train_X_seqs, train_Y, test_X_ims, test_X_seqs,
 			test_Y, im_shape, vocab_size, num_answers,
-			all_answers, test_qs, test_answer_indices)
+			all_answers, test_qs, test_answer_indices, test_image_ids)
