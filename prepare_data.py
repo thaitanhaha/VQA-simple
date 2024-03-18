@@ -5,15 +5,33 @@ import json
 import os
 import numpy as np
 
-def setup():
-	def read_questions(path):
-		with open(path, 'r') as file:
-			qs = json.load(file)
-		texts = [q[0] for q in qs]
-		answers = [q[1] for q in qs]
-		image_ids = [q[2] for q in qs]
-		return (texts, answers, image_ids)
+def load_and_proccess_image(image_path):
+	im = img_to_array(load_img(image_path))
+	return im / 255 - 0.5
 
+def read_images(paths):
+	ims = {}
+	for image_id, image_path in paths.items():
+		ims[image_id] = load_and_proccess_image(image_path)
+	return ims
+
+def extract_paths(dir):
+	paths = {}
+	for filename in os.listdir(dir):
+		if filename.endswith('.png'):
+			image_id = int(filename[:-4])
+			paths[image_id] = os.path.join(dir, filename)
+	return paths
+
+def read_questions(path):
+	with open(path, 'r') as file:
+		qs = json.load(file)
+	texts = [q[0] for q in qs]
+	answers = [q[1] for q in qs]
+	image_ids = [q[2] for q in qs]
+	return (texts, answers, image_ids)
+
+def setup():
 	train_qs, train_answers, train_image_ids = read_questions('data/train/questions.json')
 	test_qs, test_answers, test_image_ids = read_questions('data/test/questions.json')
 
@@ -24,37 +42,10 @@ def setup():
 	print(f'Found {num_answers} total answers:')
 	print(all_answers)
 
-
-	def load_and_proccess_image(image_path):
-		im = img_to_array(load_img(image_path))
-		return im / 255 - 0.5
-
-	def read_images(paths):
-		ims = {}
-		for image_id, image_path in paths.items():
-			ims[image_id] = load_and_proccess_image(image_path)
-		return ims
-
-	def extract_paths(dir):
-		paths = {}
-		for filename in os.listdir(dir):
-			if filename.endswith('.png'):
-				image_id = int(filename[:-4])
-				paths[image_id] = os.path.join(dir, filename)
-		return paths
-
 	train_ims = read_images(extract_paths('data/train/images'))
 	test_ims  = read_images(extract_paths('data/test/images'))
     
 	im_shape = train_ims[0].shape
-
-	# tokenizer = Tokenizer()
-	# tokenizer.fit_on_texts(train_qs)
-
-	# vocab_size = len(tokenizer.word_index) + 1
-
-	# train_X_seqs = tokenizer.texts_to_matrix(train_qs)
-	# test_X_seqs = tokenizer.texts_to_matrix(test_qs)
 
 	vocab_size = 27
 	vectorizer = TextVectorization(max_tokens=vocab_size, output_mode='count')
