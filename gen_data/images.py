@@ -3,8 +3,6 @@ from random import randint
 from shape import Shape
 import math
 
-# We draw the image at a larger scale and then resize it down to get anti-aliasing
-# This is necessary because PIL's draw methods don't anti-alias
 IM_SIZE = 64
 IM_DRAW_SCALE = 2
 IM_DRAW_SIZE = IM_SIZE * IM_DRAW_SCALE
