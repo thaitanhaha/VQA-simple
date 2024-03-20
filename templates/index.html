@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VQA</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+</head>
+<body>
+    {% if message %}
+        <h1>Visual Question Answering</h1>
+        <form action="/" method="POST">
+            <h2>Result</h2>
+            <p class="result">{{ message }}</p>
+            <button type="submit">Return</button>
+        </form>
+    {% else %}
+        <h1>Visual Question Answering</h1>
+        <form action="/result" method="POST" enctype="multipart/form-data">
+            <div class="container">
+                <div class="column">
+                    <h2>Upload Image</h2>
+                    <input type="file" name="file">
+                    <div id="preview"></div>
+                </div>
+                <div class="column">
+                    <h2>Type Here</h2>
+                    <textarea name="text" rows="5" cols="50" placeholder="What is the shape?"></textarea><br>
+                </div>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    {% endif %}
+
+
+    <script>
+        function previewImage(input) {
+            var preview = document.getElementById('preview');
+            preview.innerHTML = '';
+            
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var img = document.createElement('img');
+                    img.src = e.target.result;
+                    preview.appendChild(img);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        document.querySelector('input[type="file"]').addEventListener('change', function() {
+            previewImage(this);
+        });
+    </script>
+</body>
+</html>

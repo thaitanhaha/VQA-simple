@@ -43,7 +43,7 @@ def test_with_custom_data(filepath, question):
   predictions = model.predict([test_X_ims, test_X_seqs])
   all_answers = ['teal', 'black', 'rectangle', 'green', 'triangle', 'circle', 'blue', 'gray', 'red', 'yes', 'no', 'yellow', 'brown']
   print(all_answers[np.argmax(predictions[0])])
-  return
+  return all_answers[np.argmax(predictions[0])]
 
 def main():
     if len(sys.argv) == 2 and sys.argv[1] == 'test':
