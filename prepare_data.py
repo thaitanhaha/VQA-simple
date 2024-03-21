@@ -9,6 +9,10 @@ def load_and_proccess_image(image_path):
 	im = img_to_array(load_img(image_path))
 	return im / 255 - 0.5
 
+def proccess_image(image):
+	im = img_to_array((image))
+	return im / 255 - 0.5
+
 def read_images(paths):
 	ims = {}
 	for image_id, image_path in paths.items():

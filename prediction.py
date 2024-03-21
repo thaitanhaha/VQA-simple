@@ -2,7 +2,7 @@ from keras.layers import TextVectorization
 import numpy as np
 import os, sys
 from model import build_model
-from prepare_data import setup, load_and_proccess_image, read_questions
+from prepare_data import setup, load_and_proccess_image, read_questions, proccess_image
 
 
 def test_with_generated_data():
@@ -24,7 +24,8 @@ def test_with_generated_data():
   print("Total prediction: " + str(len(test_answer_indices)))
   print("Wrong prediction: " + str(wrong_count))
 
-def test_with_custom_data(filepath, question):
+def test_with_custom_data(file, question):
+  # print(load_and_proccess_image('custom_data/0.png'))
   print('\n--- Building model...')
   model = build_model((64, 64, 3), 27, 13)
 
@@ -36,8 +37,11 @@ def test_with_custom_data(filepath, question):
   vectorizer.adapt(train_qs)
   test_X_seqs = vectorizer([question])
 
-  if os.path.isfile(filepath) and filepath.endswith('.png'):
-    ims = load_and_proccess_image(filepath)
+  if type(file) is str:
+    if os.path.isfile(file) and file.endswith('.png'):
+      ims = load_and_proccess_image(file)
+  else:
+    ims = proccess_image(file) 
   test_X_ims = np.array([ims])
 
   predictions = model.predict([test_X_ims, test_X_seqs])
